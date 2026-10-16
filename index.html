@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PIX - Projeto Casinhas Azuis</title>
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #0284c7; color: #fff; text-align: center; padding: 30px 15px; margin: 0; }
+    .card { background: #fff; color: #1e293b; max-width: 360px; margin: 0 auto; padding: 25px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+    h2 { margin-top: 0; color: #0284c7; }
+    .chave-box { background: #f1f5f9; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 18px; margin: 15px 0; border: 1px dashed #94a3b8; }
+    button { background: #16a34a; color: white; border: none; padding: 15px 20px; width: 100%; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; margin-bottom: 10px; transition: 0.2s; }
+    button:active { transform: scale(0.98); }
+    .btn-sec { background: #0284c7; }
+    .msg { color: #16a34a; font-weight: bold; display: none; margin-top: 10px; }
+    img { margin: 15px 0; border-radius: 8px; border: 1px solid #e2e8f0; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>🐾 Projeto Casinhas Azuis</h2>
+    <p>Apoie o <b>Protetor Felipe</b> na compra de insumos e vacinas.</p>
+    
+    <!-- QR Code gerado automaticamente com o padrão do Banco Central -->
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=00020126330014BR.GOV.BCB.PIX0111079263554025204000053039865802BR5915PROTETOR%20FELIPE6012CACHOEIRINHA62070503***63044E5A" alt="QR Code PIX">
+
+    <div class="chave-box" id="chave">07926355402</div>
+
+    <button onclick="copiarChave()">📋 Copiar Chave PIX (CPF)</button>
+    <button class="btn-sec" onclick="copiarCodigo()">💠 Copiar Código "PIX Copia e Cola"</button>
+    
+    <p id="sucesso" class="msg">✅ Copiado! Agora é só abrir o app do seu banco e colar no PIX.</p>
+  </div>
+
+  <script>
+    function copiarChave() {
+      navigator.clipboard.writeText("07926355402");
+      mostrarMsg();
+    }
+    function copiarCodigo() {
+      navigator.clipboard.writeText("00020126330014BR.GOV.BCB.PIX0111079263554025204000053039865802BR5915PROTETOR FELIPE6012CACHOEIRINHA62070503***63044E5A");
+      mostrarMsg();
+    }
+    function mostrarMsg() {
+      document.getElementById("sucesso").style.display = "block";
+    }
+  </script>
+</body>
+</html>
