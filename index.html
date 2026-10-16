@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Doação PIX - Projeto Casinhas Azuis</title>
+  <!-- Biblioteca oficial de QRCode para garantir funcionamento mesmo se a imagem não carregar -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     * {
       box-sizing: border-box;
@@ -25,8 +27,8 @@
     .card {
       background: #ffffff;
       width: 100%;
-      max-width: 380px;
-      padding: 28px 24px;
+      max-width: 390px;
+      padding: 28px 22px;
       border-radius: 20px;
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.22);
       text-align: center;
@@ -56,36 +58,45 @@
       font-size: 14px;
       color: #64748b;
       line-height: 1.4;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
     .subtitle strong {
       color: #334155;
     }
 
-    .qr-container {
+    /* Container com ampla margem branca (Quiet Zone) para leitura perfeita da câmera do banco */
+    .qr-wrapper {
       background: #ffffff;
       border: 2px solid #e2e8f0;
       border-radius: 16px;
-      padding: 14px;
+      padding: 24px;
       display: inline-block;
-      margin-bottom: 18px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+      margin-bottom: 16px;
     }
 
-    .qr-container img {
-      width: 220px;
-      height: auto;
+    /* Exibe a imagem inteira sem cortar nada e sem distorcer os pixels */
+    .qr-wrapper img {
       display: block;
-      image-rendering: -webkit-optimize-contrast;
-      image-rendering: crisp-edges;
-      image-rendering: pixelated;
+      width: 240px;
+      height: auto;
+      max-width: 100%;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 8px; /* Compensa a margem direita curta da imagem original */
+    }
+
+    #qrcode-fallback {
+      display: none;
+      margin: 0 auto;
+      padding: 8px;
+      background: #ffffff;
     }
 
     .qr-hint {
       font-size: 12px;
       color: #64748b;
-      margin-top: 8px;
+      margin-bottom: 18px;
       font-weight: 500;
     }
 
@@ -171,7 +182,6 @@
       font-size: 13px;
       font-weight: 600;
       line-height: 1.4;
-      animation: fadeIn 0.25s ease-in-out;
     }
 
     .steps {
@@ -189,11 +199,6 @@
       display: block;
       margin-bottom: 4px;
     }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
   </style>
 </head>
 <body>
@@ -203,11 +208,17 @@
     <h1>Projeto Casinhas Azuis</h1>
     <p class="subtitle">Apoie o <strong>Protetor Felipe</strong> na compra de materiais, ração e vacinas para os cães comunitários.</p>
 
-    <!-- Imagem EXATA que você enviou embutida diretamente no código (Base64) -->
-    <div class="qr-container">
-      <img src="data:image/png;base64,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" alt="QR Code PIX Projeto Casinhas Azuis">
-      <p class="qr-hint">Aponte a câmera do app do seu banco</p>
+    <!-- Exibe a sua imagem qrcode.png com margem branca extra sem cortar as bordas -->
+    <div class="qr-wrapper">
+      <img 
+        id="qr-img" 
+        src="qrcode.png" 
+        alt="QR Code PIX Projeto Casinhas Azuis"
+        onerror="ativarQrNativo()"
+      >
+      <div id="qrcode-fallback"></div>
     </div>
+    <p class="qr-hint">Aponte a câmera do app do seu banco para o QR Code</p>
 
     <!-- Caixa com a Chave CPF visível -->
     <div class="info-box">
@@ -240,6 +251,23 @@
   <script>
     const codigoCopiaECola = "00020126330014BR.GOV.BCB.PIX0111079263554025204000053039865802BR5901N6001C62170513CasinhasAzuis6304AABC";
     const chaveCpf = "07926355402";
+
+    // Se você ainda não tiver subido o arquivo qrcode.png, ele desenha o QR Code perfeito na tela automaticamente
+    function ativarQrNativo() {
+      const img = document.getElementById("qr-img");
+      const fallback = document.getElementById("qrcode-fallback");
+      img.style.display = "none";
+      fallback.style.display = "block";
+      fallback.innerHTML = "";
+      new QRCode(fallback, {
+        text: codigoCopiaECola,
+        width: 220,
+        height: 220,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.M
+      });
+    }
 
     function copiarTexto(texto, mensagem) {
       if (navigator.clipboard && window.isSecureContext) {
